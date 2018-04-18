@@ -10,15 +10,15 @@
 namespace WebApplication1 {
     
     
-    public partial class SiteMaster {
+    public partial class _ListProduct {
         
         /// <summary>
-        /// Controllo MainContent.
+        /// Controllo Button1.
         /// </summary>
         /// <remarks>
         /// Campo generato automaticamente.
         /// Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ContentPlaceHolder MainContent;
+        protected global::System.Web.UI.WebControls.Button Button1;
     }
 }
