@@ -4,7 +4,7 @@ go
 create procedure AddRequest
 	@id int,
 	@quantita int,
-	@datadioggi date
+	@datadioggi datetime
 as
 	declare @idRichiesta int;
 	INSERT INTO RichiesteSet(data) VALUES(@datadioggi);
