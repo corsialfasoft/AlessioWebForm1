@@ -10,10 +10,13 @@ namespace WebApplication1 {
     public partial class _Detail : Page {
         public int codice{ get; set; }
         public string descrizione{ get; set; }
-        public string Quantita{ get; set; }
+        public int Quantita{ get; set; }
         public Prodotto p;
-
+        public List<Prodotto> prodotticar = new List<Prodotto>();
         protected void Page_Load(object sender,EventArgs e) {
+            if(Session["prodotti"]!=null){
+                prodotticar = Session["prodotti"] as List<Prodotto>;
+            }
             try{
                 p = CercaById(int.Parse(Request["codice"]));
                 if(p != null) {
@@ -36,7 +39,10 @@ namespace WebApplication1 {
         }
 
         protected void Add(object sender,EventArgs e) {
-
+            p.Quantita = Convert.ToInt16(quantita.Text);
+            prodotticar.Add(p);
+            Session["prodotti"] = prodotticar;
+            Response.Redirect(String.Format("~/Cart"));
         }
     }
 }

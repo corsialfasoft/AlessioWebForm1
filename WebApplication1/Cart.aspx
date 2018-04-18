@@ -13,12 +13,13 @@
         <ul class="list-group">
             <% if(products != null){ 
                     foreach(var p in products){ %>
-                        <li><% =p.Codice %>, <%=p.Descrizione%></li>
+                        <li><% =p.Codice %>, <%=p.Descrizione%>,<%=p.Quantita%></li>
                     <%}
              } %>
         </ul>
     </div>
     <div>
+        <asp:Button ID="Button1" OnClick="AddRequest" Text="Aggiungi Richiesta" runat="server"></asp:Button>
         <asp:Button ID="TextBox1" OnClick="Pulisci" Text="Pulisci carrello" runat="server"></asp:Button>
     </div>
 </asp:Content>

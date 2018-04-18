@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data.SqlClient;
 
 namespace WebApplication1 {
     public partial class Prodotto {
@@ -11,10 +12,14 @@ namespace WebApplication1 {
         public string Descrizione {get; set;}
         public int Quantita {get; set;}
 
-        //Mok
         public Prodotto(int codice,string descrizione) {
             this.Codice = codice;
             this.Descrizione = descrizione;
+        }
+        public Prodotto(int codice,string descrizione,int Quantita) {
+            this.Codice = codice;
+            this.Descrizione = descrizione;
+            this.Quantita = Quantita;
         }
     }
     public partial class DataBases {
@@ -25,18 +30,60 @@ namespace WebApplication1 {
         }
 
         private List<Prodotto> initLista() {
-            List<Prodotto> products = new List<Prodotto>();
-            products.Add(new Prodotto(1,"ciao"));
-            products.Add(new Prodotto(2,"pino"));
-            products.Add(new Prodotto(3,"panino"));
-            products.Add(new Prodotto(4,"elisabetta"));
-            products.Add(new Prodotto(5,"cotoletta"));
-            products.Add(new Prodotto(6,"verso"));
-            products.Add(new Prodotto(7,"il"));
-            products.Add(new Prodotto(8,"mare"));
-            products.Add(new Prodotto(9,"blu"));
-            products.Add(new Prodotto(10,"leggenda"));
-            return products;
+            return Reader<List<Prodotto>>(TakeProducts,$"SELECT ProdottiSet.Id,ProdottiSet.descrizione,ProdottiSet.quantita FROM ProdottiSet");
+        }
+
+        public SqlConnection InitConnection() {
+			SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+			builder.DataSource = @"(localdb)\MSSQLLocalDB";
+			builder.InitialCatalog = "RICHIESTE";
+			return new SqlConnection(builder.ConnectionString);
+		}
+
+        private void Procedura(string sql){
+            SqlConnection connection = InitConnection();
+			try {
+				connection.Open();				
+				SqlCommand cmd = new SqlCommand(sql, connection);
+				cmd.ExecuteNonQuery();
+				cmd.Dispose();
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				connection.Dispose();
+			}
+        }
+
+        public delegate T Delelato<T>(SqlDataReader reader);
+        public T Reader<T>(Delelato<T> metodo, string sql){
+            SqlConnection con = InitConnection();
+            try{
+                con.Open();
+                SqlCommand cmd = new SqlCommand(sql, con);
+                SqlDataReader reader = cmd.ExecuteReader();
+                T ris = metodo(reader);
+                reader.Dispose();
+                cmd.Dispose();
+                return ris;
+            }
+            catch(Exception e){
+                throw e;
+            }
+            finally{
+                con.Dispose();
+            }
+        }
+        private List<Prodotto> TakeProducts(SqlDataReader reader) {
+            try{
+                List<Prodotto> prodotti = new List<Prodotto>();
+                while (reader.Read()){
+                    prodotti.Add(new Prodotto(reader.GetInt32(0),reader.GetString(1),(int)reader.GetSqlInt32(2)));
+                }
+                reader.Close();
+                return prodotti;
+            } catch(Exception e) {
+                throw e;
+            }
         }
     }
     public partial class _ListProduct : Page {
