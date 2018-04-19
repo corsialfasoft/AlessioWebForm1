@@ -30,6 +30,7 @@ namespace WebApplication1 {
 				    command.Parameters.Add("@id",System.Data.SqlDbType.Int).Value=p.Codice;
                     command.Parameters.Add("@quantita",System.Data.SqlDbType.Int).Value=p.Quantita;
 				    command.Dispose();
+                    Session["prodotti"] = null;
                 }
 			}catch (Exception p) {
 				throw p; 

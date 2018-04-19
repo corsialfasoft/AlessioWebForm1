@@ -28,6 +28,14 @@ namespace WebApplication1 {
             }
         }
 
+        protected void ControllaQuantita(Object oggetto, ServerValidateEventArgs args) {
+            if (args.Value.Equals("3")) {
+                args.IsValid = true;
+            } else {
+                args.IsValid = false;
+            }
+        }
+
         private Prodotto CercaById(int codice) {
             DataBases db = new DataBases();
             foreach(Prodotto p in db.products) {
@@ -39,10 +47,12 @@ namespace WebApplication1 {
         }
 
         protected void Add(object sender,EventArgs e) {
-            p.Quantita = Convert.ToInt16(quantita.Text);
-            prodotticar.Add(p);
-            Session["prodotti"] = prodotticar;
-            Response.Redirect(String.Format("~/Cart"));
+            if (Page.IsValid){
+                p.Quantita = Convert.ToInt16(quantita.Text);
+                prodotticar.Add(p);
+                Session["prodotti"] = prodotticar;
+                Response.Redirect(String.Format("~/Cart"));
+            }
         }
     }
 }
